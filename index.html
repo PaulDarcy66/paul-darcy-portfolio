@@ -20,11 +20,18 @@
 
     html { scroll-behavior: smooth; }
 
+    /* ── ANIMATIONS ── */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
+      animation: fadeIn 0.8s ease-in-out;
     }
 
     /* ── NAV ── */
@@ -65,7 +72,7 @@
       color: var(--muted);
       font-size: 0.9rem;
       font-weight: 500;
-      transition: color 0.2s;
+      transition: color 0.2s ease;
     }
 
     .nav-links a:hover { color: var(--accent); }
@@ -159,13 +166,18 @@
       border-radius: 6px;
       font-weight: 600;
       font-size: 0.95rem;
-      transition: background 0.2s;
+      transition: background 0.3s ease, transform 0.2s ease;
       border: none;
       cursor: pointer;
       font-family: inherit;
     }
 
-    .btn:hover { background: var(--accent2); }
+    .btn:hover { background: var(--accent2); transform: scale(1.02); }
+
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
 
     .btn-outline {
       background: transparent;
@@ -224,12 +236,12 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: box-shadow 0.2s, transform 0.2s;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
     }
 
     .project-card:hover {
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+      transform: translateY(-6px);
     }
 
     .project-img {
@@ -315,11 +327,11 @@
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
-      transition: gap 0.2s;
+      transition: gap 0.2s ease, color 0.2s ease;
       margin-top: auto;
     }
 
-    .project-link:hover { gap: 0.5rem; }
+    .project-link:hover { gap: 0.5rem; color: var(--accent2); }
 
     /* ── ABOUT ── */
     .about-grid {
@@ -471,10 +483,13 @@
       font-family: inherit;
       font-size: 0.95rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    form input:focus, form textarea:focus { border-color: var(--accent); }
+    form input:focus, form textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
+    }
     form input::placeholder, form textarea::placeholder { color: #aab5bb; }
     form textarea { resize: vertical; min-height: 130px; }
 
@@ -750,7 +765,13 @@
     function handleSubmit(e) {
       e.preventDefault();
       const form = e.target;
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
       const formData = new FormData(form);
+
+      // Show sending state
+      submitBtn.textContent = 'Sending...';
+      submitBtn.disabled = true;
 
       fetch('/', {
         method: 'POST',
@@ -758,9 +779,18 @@
         body: new URLSearchParams(formData).toString(),
       })
       .then(() => {
-        form.innerHTML = '<p style="color:var(--accent);font-weight:600;padding:1rem 0;">Thanks — message received. I\'ll be in touch shortly.</p>';
+        // Show success message
+        submitBtn.textContent = '✓ Sent';
+        submitBtn.style.background = 'var(--accent)';
+        setTimeout(() => {
+          form.innerHTML = '<p style="color:var(--accent);font-weight:600;padding:1rem 0;font-size:1rem;">✓ Thanks — message received. I\'ll be in touch shortly.</p>';
+        }, 1000);
       })
-      .catch(error => console.error('Form submission error:', error));
+      .catch(error => {
+        console.error('Form submission error:', error);
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      });
     }
   </script>
 
