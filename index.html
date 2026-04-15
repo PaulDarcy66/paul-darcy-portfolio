@@ -714,11 +714,11 @@
           <div class="contact-detail"><span>🔗</span><a href="https://www.linkedin.com/in/paul-d-arcy-5a1293142/" target="_blank" style="color:var(--muted);text-decoration:none;">linkedin.com/in/paul-d-arcy</a></div>
           <div class="contact-detail"><span>📍</span><span>United Kingdom</span></div>
         </div>
-        <form onsubmit="handleSubmit(event)">
-          <input type="text" placeholder="Your name" required>
-          <input type="email" placeholder="Your email" required>
-          <input type="text" placeholder="Subject">
-          <textarea placeholder="Your message"></textarea>
+        <form name="contact" method="POST" netlify onsubmit="handleSubmit(event)">
+          <input type="text" name="name" placeholder="Your name" required>
+          <input type="email" name="email" placeholder="Your email" required>
+          <input type="text" name="subject" placeholder="Subject">
+          <textarea name="message" placeholder="Your message"></textarea>
           <button type="submit" class="btn">Send message</button>
         </form>
       </div>
