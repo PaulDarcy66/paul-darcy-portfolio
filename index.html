@@ -749,7 +749,18 @@
     });
     function handleSubmit(e) {
       e.preventDefault();
-      e.target.innerHTML = '<p style="color:var(--accent);font-weight:600;padding:1rem 0;">Thanks — message received. I\'ll be in touch shortly.</p>';
+      const form = e.target;
+      const formData = new FormData(form);
+
+      fetch('/', {
+        method: 'POST',
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData).toString(),
+      })
+      .then(() => {
+        form.innerHTML = '<p style="color:var(--accent);font-weight:600;padding:1rem 0;">Thanks — message received. I\'ll be in touch shortly.</p>';
+      })
+      .catch(error => console.error('Form submission error:', error));
     }
   </script>
 
